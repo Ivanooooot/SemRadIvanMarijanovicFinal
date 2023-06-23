@@ -1,0 +1,61 @@
+﻿@model List<Vehiclemodel>
+
+@{
+    ViewData["Title"] = "Dobro došli na web stranicu rent-a-car";
+    ViewData["Description"] = "Ovdje možete izabrati svog limenog ljubimca za najam od jednog do mjesec dana između najpoznatijih brandova vozila";
+}
+
+<div class="text-center">
+    <h1>@ViewData["Title"]</h1>
+    <p>@ViewData["Description"]</p>
+</div>
+
+@if (!String.IsNullOrEmpty(ViewBag.ThankYouMessage))
+{
+    <div class="col-12">
+        <p class="alert alert-danger">@ViewBag.ThankYouMessage</p>
+    </div>
+}
+
+<form method="get" asp-area="" asp-controller="Home" asp-action="Index" class="row mb-5">
+
+
+   
+
+    <div class="col-3">
+        <select class="form-select" id="floatingSelect" name="categoryId">
+            <option selected value="0">All categories</option>
+            @foreach (var category in ViewBag.Categories)
+            {
+                <option value="@category.Id">@category.Title</option>
+            }
+        </select>
+    </div>
+
+    <div class="col-3">
+        <input type="submit" class="btn btn-success" value="Search..." />
+    </div>
+
+</form>
+
+<div class="row">
+
+    @foreach (var item in Model)
+    {
+        <div class="col-4 mb-3">
+            <div class="card">
+                @{
+                    string setImage = !String.IsNullOrEmpty(item.Image) ? "~/images/vehiclemodels/" + item.Image : "~/images/default-placeholder.png";
+                }
+                <img src="@Url.Content(setImage)" class="card-img-top" alt="...">
+
+                <div class="card-body">
+                    <h5 class="card-title">@item.Title</h5>
+                    <p class="card-text">@item.Price</p>
+                    <a asp-controller="details" asp-action="details" asp-route-id="@item.Id" class="btn btn-sm btn-outline-secondary" >Details</a>
+
+                </div>
+            </div>
+        </div>
+    }
+</div>
