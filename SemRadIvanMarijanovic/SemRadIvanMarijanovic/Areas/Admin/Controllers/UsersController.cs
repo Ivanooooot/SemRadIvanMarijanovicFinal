@@ -1,82 +1,38 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using SemRadIvanMarijanovic.Areas.Identity.Data;
 using SemRadIvanMarijanovic.Data;
 using SemRadIvanMarijanovic.Models;
-using System.Data;
-using System.ComponentModel.DataAnnotations;
-using System.Security.Claims;
 
-namespace SemRadIvanMarijanovic.Controllers
+namespace SemRadIvanMarijanovic.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    [Authorize(Roles = "Admin")]
-    public class AdminController : Controller
+    public class UsersController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        private UserManager<ApplicationUser> userManager;
-        private IPasswordHasher<ApplicationUser> passwordHasher;
-
-        public AdminController(UserManager<ApplicationUser> usrMgr, IPasswordHasher<ApplicationUser> passwordHash, ApplicationDbContext context)
+        public UsersController(ApplicationDbContext context, UserManager<ApplicationUser> user)
         {
-            userManager = usrMgr;
-            passwordHasher = passwordHash;
             _context = context;
+            _userManager = user;
         }
 
-        public IActionResult Index()
+
+
+        // GET: Admin/Users
+        public async Task<IActionResult> Index()
         {
-            return View(userManager.Users);
+              return _context.User != null ? 
+                          View(await _context.User.ToListAsync()) :
+                          Problem("Entity set 'ApplicationDbContext.User'  is null.");
         }
-
-        public IActionResult Create() => View();
-
-        [HttpPost]
-        public async Task<IActionResult> Create(User user)
-        {
-            if (ModelState.IsValid)
-            {
-                ApplicationUser appUser = new ApplicationUser
-                {
-                    PasswordHash = user.Password,
-                    EmailConfirmed = user.IsEmailConfirmed,
-                    Email = user.Email,
-                    //TwoFactorEnabled = true
-                };
-
-                IdentityResult result = await userManager.CreateAsync(appUser, user.Password);
-
-                // uncomment for email confirmation (link - https://www.yogihosting.com/aspnet-core-identity-email-confirmation/)
-                /*if (result.Succeeded)
-                {
-                    var token = await userManager.GenerateEmailConfirmationTokenAsync(appUser);
-                    var confirmationLink = Url.Action("ConfirmEmail", "Email", new { token, email = user.Email }, Request.Scheme);
-                    EmailHelper emailHelper = new EmailHelper();
-                    bool emailResponse = emailHelper.SendEmail(user.Email, confirmationLink);
-
-                    if (emailResponse)
-                        return RedirectToAction("Index");
-                    else
-                    {
-                        // log email failed 
-                    }
-                }*/
-
-                if (result.Succeeded)
-                    return RedirectToAction("Index");
-                else
-                {
-                    foreach (IdentityError error in result.Errors)
-                        ModelState.AddModelError("", error.Description);
-                }
-            }
-            return View(user);
-
-        }
-
 
         // GET: Admin/Users/Details/5
         public async Task<IActionResult> Details(int? id)
@@ -96,8 +52,27 @@ namespace SemRadIvanMarijanovic.Controllers
             return View(user);
         }
 
+        // GET: Admin/Users/Create
+        public IActionResult Create()
+        {
+            return View();
+        }
 
-
+        // POST: Admin/Users/Create
+        // To protect from overposting attacks, enable the specific properties you want to bind to.
+        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create([Bind("Id,Type,Email,Password,ConfirmationPassword,IsEmailConfirmed")] User user)
+        {
+            if (ModelState.IsValid)
+            {
+                _context.Add(user);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+            return View(user);
+        }
 
         // GET: Admin/Users/Edit/5
         public async Task<IActionResult> Edit(int? id)
@@ -182,14 +157,14 @@ namespace SemRadIvanMarijanovic.Controllers
             {
                 _context.User.Remove(user);
             }
-
+            
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool UserExists(int id)
         {
-            return (_context.User?.Any(e => e.Id == id)).GetValueOrDefault();
+          return (_context.User?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
 }

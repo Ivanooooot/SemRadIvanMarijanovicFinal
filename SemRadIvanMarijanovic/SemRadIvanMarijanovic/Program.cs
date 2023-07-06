@@ -28,6 +28,10 @@ namespace SemRadIvanMarijanovic
                         options.Password.RequireUppercase = true;
                         options.Password.RequireNonAlphanumeric = false;
                         options.Password.RequiredLength = 7;
+
+                        options.User.AllowedUserNameCharacters =
+                "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+ ";
+                        options.User.RequireUniqueEmail = false;
                     }
                 );
 

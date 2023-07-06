@@ -52,14 +52,14 @@ namespace SemRadIvanMarijanovic.Migrations
                         new
                         {
                             Id = "66412151-dd0c-4b69-82c8-0f51551515",
-                            ConcurrencyStamp = "f65fd068-088f-4220-b68b-c873325a220f",
+                            ConcurrencyStamp = "04eea98a-d569-4da0-9208-f678d42f8f3f",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
                             Id = "0e71d461-63e3-4aa5-be93-d708888888888",
-                            ConcurrencyStamp = "a8ecb777-b365-4ad8-9bd6-0e9374f199b7",
+                            ConcurrencyStamp = "e38a91bd-9672-4036-8e1a-58b60129e56f",
                             Name = "Customer",
                             NormalizedName = "CUSTOMER"
                         });
@@ -251,15 +251,15 @@ namespace SemRadIvanMarijanovic.Migrations
                         {
                             Id = "6642155-dj2c-4819-82c8-0f4151555555551",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "4a67fd6d-68ba-4d8e-bcd6-64e34a54c328",
+                            ConcurrencyStamp = "1de68b57-a373-4fe8-95ea-abe03c374407",
                             Email = "ivansem@gmail.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "IVANSEM@GMAIL.COM",
                             NormalizedUserName = "IVANSEM@GMAIL.COM",
-                            PasswordHash = "AQAAAAEAACcQAAAAEHfeNSkm6XhPMWl4eOzML8q9n0tpR4+iUxCR0eCMOZW4mb0QuqSxmiWkC9nGRLohIg==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEMSgzPzuwh5lHjhb2d582jWdNDJ3W/ECBUkPbw914JCbWLMA2MRrFJb/ekeznxwwhA==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "33073c5c-282f-4ad1-93af-573a0c71b208",
+                            SecurityStamp = "176a0d06-9773-4bcb-ad09-b2568ebf4f1f",
                             TwoFactorEnabled = false,
                             UserName = "ivansem@gmail.com"
                         });
@@ -335,6 +335,36 @@ namespace SemRadIvanMarijanovic.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("RentalStatuses");
+                });
+
+            modelBuilder.Entity("SemRadIvanMarijanovic.Models.User", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("ConfirmationPassword")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsEmailConfirmed")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Password")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("User");
                 });
 
             modelBuilder.Entity("SemRadIvanMarijanovic.Models.Vehiclemodel", b =>
