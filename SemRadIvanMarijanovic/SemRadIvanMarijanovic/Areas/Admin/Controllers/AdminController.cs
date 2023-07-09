@@ -1,9 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using SemRadIvanMarijanovic.Areas.Identity.Data;
-using SemRadIvanMarijanovic.Data;
 using SemRadIvanMarijanovic.Models;
 using System.Data;
 using System.ComponentModel.DataAnnotations;
@@ -15,16 +13,13 @@ namespace SemRadIvanMarijanovic.Controllers
     [Authorize(Roles = "Admin")]
     public class AdminController : Controller
     {
-        private readonly ApplicationDbContext _context;
-
         private UserManager<ApplicationUser> userManager;
         private IPasswordHasher<ApplicationUser> passwordHasher;
 
-        public AdminController(UserManager<ApplicationUser> usrMgr, IPasswordHasher<ApplicationUser> passwordHash, ApplicationDbContext context)
+        public AdminController(UserManager<ApplicationUser> usrMgr, IPasswordHasher<ApplicationUser> passwordHash)
         {
             userManager = usrMgr;
             passwordHasher = passwordHash;
-            _context = context;
         }
 
         public IActionResult Index()
@@ -41,30 +36,17 @@ namespace SemRadIvanMarijanovic.Controllers
             {
                 ApplicationUser appUser = new ApplicationUser
                 {
-                    PasswordHash = user.Password,
-                    EmailConfirmed = user.IsEmailConfirmed,
+                    UserName = user.Email,
                     Email = user.Email,
+                    IsEmailConfirmed= user.IsEmailConfirmed,
+                    Type= user.Type
                     //TwoFactorEnabled = true
                 };
 
                 IdentityResult result = await userManager.CreateAsync(appUser, user.Password);
+                
 
-                // uncomment for email confirmation (link - https://www.yogihosting.com/aspnet-core-identity-email-confirmation/)
-                /*if (result.Succeeded)
-                {
-                    var token = await userManager.GenerateEmailConfirmationTokenAsync(appUser);
-                    var confirmationLink = Url.Action("ConfirmEmail", "Email", new { token, email = user.Email }, Request.Scheme);
-                    EmailHelper emailHelper = new EmailHelper();
-                    bool emailResponse = emailHelper.SendEmail(user.Email, confirmationLink);
-
-                    if (emailResponse)
-                        return RedirectToAction("Index");
-                    else
-                    {
-                        // log email failed 
-                    }
-                }*/
-
+                
                 if (result.Succeeded)
                     return RedirectToAction("Index");
                 else
@@ -74,122 +56,78 @@ namespace SemRadIvanMarijanovic.Controllers
                 }
             }
             return View(user);
-
         }
 
-
-        // GET: Admin/Users/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> ConfirmEmail(string token, string email)
         {
-            if (id == null || _context.User == null)
-            {
-                return NotFound();
-            }
-
-            var user = await _context.User
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var user = await userManager.FindByEmailAsync(email);
             if (user == null)
-            {
-                return NotFound();
-            }
+                return View("Error");
 
-            return View(user);
+            var result = await userManager.ConfirmEmailAsync(user, token);
+            return View(result.Succeeded ? "ConfirmEmail" : "Error");
         }
 
-
-
-
-        // GET: Admin/Users/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Update(string id)
         {
-            if (id == null || _context.User == null)
-            {
-                return NotFound();
-            }
-
-            var user = await _context.User.FindAsync(id);
-            if (user == null)
-            {
-                return NotFound();
-            }
-            return View(user);
+            ApplicationUser user = await userManager.FindByIdAsync(id);
+            if (user != null)
+                return View(user);
+            else
+                return RedirectToAction("Index");
         }
 
-        // POST: Admin/Users/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Type,Email,Password,ConfirmationPassword,IsEmailConfirmed")] User user)
+        public async Task<IActionResult> Update(string id, string email, string password)
         {
-            if (id != user.Id)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(user);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!UserExists(user.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            return View(user);
-        }
-
-        // GET: Admin/Users/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null || _context.User == null)
-            {
-                return NotFound();
-            }
-
-            var user = await _context.User
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (user == null)
-            {
-                return NotFound();
-            }
-
-            return View(user);
-        }
-
-        // POST: Admin/Users/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            if (_context.User == null)
-            {
-                return Problem("Entity set 'ApplicationDbContext.User'  is null.");
-            }
-            var user = await _context.User.FindAsync(id);
+            ApplicationUser user = await userManager.FindByIdAsync(id);
             if (user != null)
             {
-                _context.User.Remove(user);
-            }
+                if (!string.IsNullOrEmpty(email))
+                    user.Email = email;
+                else
+                    ModelState.AddModelError("", "Email cannot be empty");
 
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+                if (!string.IsNullOrEmpty(password))
+                    user.PasswordHash = passwordHasher.HashPassword(user, password);
+                else
+                    ModelState.AddModelError("", "Password cannot be empty");
+
+                if (!string.IsNullOrEmpty(email) && !string.IsNullOrEmpty(password))
+                {
+                    IdentityResult result = await userManager.UpdateAsync(user);
+                    if (result.Succeeded)
+                        return RedirectToAction("Index");
+                    else
+                        Errors(result);
+                }
+            }
+            else
+                ModelState.AddModelError("", "User Not Found");
+            return View(user);
         }
 
-        private bool UserExists(int id)
+        private void Errors(IdentityResult result)
         {
-            return (_context.User?.Any(e => e.Id == id)).GetValueOrDefault();
+            foreach (IdentityError error in result.Errors)
+                ModelState.AddModelError("", error.Description);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Delete(string id)
+        {
+            ApplicationUser user = await userManager.FindByIdAsync(id);
+            if (user != null)
+            {
+                IdentityResult result = await userManager.DeleteAsync(user);
+                if (result.Succeeded)
+                    return RedirectToAction("Index");
+                else
+                    Errors(result);
+            }
+            else
+                ModelState.AddModelError("", "User Not Found");
+            return View("Index", userManager.Users);
         }
     }
 }

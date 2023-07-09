@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace SemRadIvanMarijanovic.Migrations
 {
-    public partial class CreateModel : Migration
+    public partial class Creeating : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -74,23 +74,6 @@ namespace SemRadIvanMarijanovic.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_RentalStatuses", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "User",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Type = table.Column<int>(type: "int", nullable: false),
-                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Password = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ConfirmationPassword = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    IsEmailConfirmed = table.Column<bool>(type: "bit", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_User", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -251,14 +234,14 @@ namespace SemRadIvanMarijanovic.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "0e71d461-63e3-4aa5-be93-d708888888888", "e38a91bd-9672-4036-8e1a-58b60129e56f", "Customer", "CUSTOMER" },
-                    { "66412151-dd0c-4b69-82c8-0f51551515", "04eea98a-d569-4da0-9208-f678d42f8f3f", "Admin", "ADMIN" }
+                    { "0e71d461-63e3-4aa5-be93-d708888888888", "83240ce8-b132-4b76-8cf2-8acf6c83f259", "Customer", "CUSTOMER" },
+                    { "66412151-dd0c-4b69-82c8-0f51551515", "46561d85-360d-4ac0-96a3-5f18db2333ae", "Admin", "ADMIN" }
                 });
 
             migrationBuilder.InsertData(
                 table: "AspNetUsers",
                 columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
-                values: new object[] { "6642155-dj2c-4819-82c8-0f4151555555551", 0, "1de68b57-a373-4fe8-95ea-abe03c374407", "ivansem@gmail.com", false, false, null, "IVANSEM@GMAIL.COM", "IVANSEM@GMAIL.COM", "AQAAAAEAACcQAAAAEMSgzPzuwh5lHjhb2d582jWdNDJ3W/ECBUkPbw914JCbWLMA2MRrFJb/ekeznxwwhA==", null, false, "176a0d06-9773-4bcb-ad09-b2568ebf4f1f", false, "ivansem@gmail.com" });
+                values: new object[] { "6642155-dj2c-4819-82c8-0f4151555555551", 0, "84fad205-924d-44ad-8cc5-b57c696d4ad4", "ivansem@gmail.com", false, false, null, "IVANSEM@GMAIL.COM", "IVANSEM@GMAIL.COM", "AQAAAAEAACcQAAAAEHt778f0DIi9F7Kr6kKVXqcb3Tz8MOzIBUK7eH1lqNR+CrYH4kjhZNmbt8kGCjzZoQ==", null, false, "c91af212-537e-493d-8e76-0c7e51856b01", false, "ivansem@gmail.com" });
 
             migrationBuilder.InsertData(
                 table: "Categories",
@@ -385,9 +368,6 @@ namespace SemRadIvanMarijanovic.Migrations
 
             migrationBuilder.DropTable(
                 name: "RentalStatuses");
-
-            migrationBuilder.DropTable(
-                name: "User");
 
             migrationBuilder.DropTable(
                 name: "VehicleCategories");

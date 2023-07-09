@@ -12,8 +12,8 @@ using SemRadIvanMarijanovic.Data;
 namespace SemRadIvanMarijanovic.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20230706153838_CreateModel")]
-    partial class CreateModel
+    [Migration("20230702145854_Creeating")]
+    partial class Creeating
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -54,14 +54,14 @@ namespace SemRadIvanMarijanovic.Migrations
                         new
                         {
                             Id = "66412151-dd0c-4b69-82c8-0f51551515",
-                            ConcurrencyStamp = "04eea98a-d569-4da0-9208-f678d42f8f3f",
+                            ConcurrencyStamp = "46561d85-360d-4ac0-96a3-5f18db2333ae",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
                             Id = "0e71d461-63e3-4aa5-be93-d708888888888",
-                            ConcurrencyStamp = "e38a91bd-9672-4036-8e1a-58b60129e56f",
+                            ConcurrencyStamp = "83240ce8-b132-4b76-8cf2-8acf6c83f259",
                             Name = "Customer",
                             NormalizedName = "CUSTOMER"
                         });
@@ -253,15 +253,15 @@ namespace SemRadIvanMarijanovic.Migrations
                         {
                             Id = "6642155-dj2c-4819-82c8-0f4151555555551",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "1de68b57-a373-4fe8-95ea-abe03c374407",
+                            ConcurrencyStamp = "84fad205-924d-44ad-8cc5-b57c696d4ad4",
                             Email = "ivansem@gmail.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "IVANSEM@GMAIL.COM",
                             NormalizedUserName = "IVANSEM@GMAIL.COM",
-                            PasswordHash = "AQAAAAEAACcQAAAAEMSgzPzuwh5lHjhb2d582jWdNDJ3W/ECBUkPbw914JCbWLMA2MRrFJb/ekeznxwwhA==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEHt778f0DIi9F7Kr6kKVXqcb3Tz8MOzIBUK7eH1lqNR+CrYH4kjhZNmbt8kGCjzZoQ==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "176a0d06-9773-4bcb-ad09-b2568ebf4f1f",
+                            SecurityStamp = "c91af212-537e-493d-8e76-0c7e51856b01",
                             TwoFactorEnabled = false,
                             UserName = "ivansem@gmail.com"
                         });
@@ -337,36 +337,6 @@ namespace SemRadIvanMarijanovic.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("RentalStatuses");
-                });
-
-            modelBuilder.Entity("SemRadIvanMarijanovic.Models.User", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<string>("ConfirmationPassword")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsEmailConfirmed")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Password")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("Type")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("User");
                 });
 
             modelBuilder.Entity("SemRadIvanMarijanovic.Models.Vehiclemodel", b =>

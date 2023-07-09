@@ -118,6 +118,4 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
         builder.Entity<VehiclemodelCategory>().HasData(vehicleCategoriesData);
     }
 
-    public DbSet<SemRadIvanMarijanovic.Models.User>? User { get; set; }
-
 }
