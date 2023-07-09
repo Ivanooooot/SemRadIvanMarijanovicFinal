@@ -31,4 +31,8 @@
     <Folder Include="wwwroot\images\vehiclemodels\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\06 2023\SemRadIvanMarijanovic\SemRAPI\SemRAPI.csproj" />
+  </ItemGroup>
+
 </Project>
