@@ -1,13 +1,15 @@
 using Microsoft.EntityFrameworkCore;
 using SemRadIvanMarijanovic.Data;
 
-namespace SRAPI
+namespace SemRadAPI
 {
     public class Program
     {
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+
+            // Add services to the container.
 
             // Add services to the container.
             builder.Services.AddDbContext<ApplicationDbContext>(
@@ -38,7 +40,6 @@ namespace SRAPI
             app.MapControllers();
 
             app.Run();
-
         }
     }
 }

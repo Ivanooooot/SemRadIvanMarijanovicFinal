@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 
-namespace SRAPI.Controllers
+namespace SemRadAPI.Controllers
 {
     [ApiController]
     [Route("[controller]")]

@@ -1,4 +1,4 @@
-namespace SRAPI
+namespace SemRadAPI
 {
     public class WeatherForecast
     {
